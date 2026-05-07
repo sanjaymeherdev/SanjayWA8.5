@@ -9,7 +9,7 @@ WORKDIR /app
 COPY src/ ./
 ENV CGO_ENABLED=1
 ENV GOOS=linux
-RUN go mod download && go build -v -ldflags="-w -s" -o whatsapp .
+RUN go build -mod=mod -v -ldflags="-w -s" -o whatsapp .
 FROM alpine:latest
 RUN apk add --no-cache \
     ffmpeg \
