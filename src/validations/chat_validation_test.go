@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainChat "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chat"
-	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
+	domainChat "whatsapp-bot/domains/chat"
+	pkgError "whatsapp-bot/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

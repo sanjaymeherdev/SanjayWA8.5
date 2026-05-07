@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/ui/rest/helpers"
+	"whatsapp-bot/infrastructure/whatsapp"
+	"whatsapp-bot/ui/rest/helpers"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow"
 )

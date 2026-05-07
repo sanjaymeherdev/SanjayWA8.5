@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	domainChat "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chat"
-	domainChatStorage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chatstorage"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/validations"
+	domainChat "whatsapp-bot/domains/chat"
+	domainChatStorage "whatsapp-bot/domains/chatstorage"
+	"whatsapp-bot/infrastructure/whatsapp"
+	pkgError "whatsapp-bot/pkg/error"
+	"whatsapp-bot/pkg/utils"
+	"whatsapp-bot/validations"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/appstate"
 )

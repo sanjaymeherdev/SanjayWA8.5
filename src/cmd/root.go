@@ -11,21 +11,21 @@ import (
 
         "go.mau.fi/whatsmeow/store/sqlstore"
 
-        "github.com/aldinokemal/go-whatsapp-web-multidevice/config"
-        domainAI "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/ai"
-        domainApp "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/app"
-        domainChat "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chat"
-        domainChatStorage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chatstorage"
-        domainDevice "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/device"
-        domainGroup "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/group"
-        domainMessage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/message"
-        domainNewsletter "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/newsletter"
-        domainSend "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/send"
-        domainUser "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/user"
-        "github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/chatstorage"
-        "github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-        "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
-        "github.com/aldinokemal/go-whatsapp-web-multidevice/usecase"
+        "whatsapp-bot/config"
+        domainAI "whatsapp-bot/domains/ai"
+        domainApp "whatsapp-bot/domains/app"
+        domainChat "whatsapp-bot/domains/chat"
+        domainChatStorage "whatsapp-bot/domains/chatstorage"
+        domainDevice "whatsapp-bot/domains/device"
+        domainGroup "whatsapp-bot/domains/group"
+        domainMessage "whatsapp-bot/domains/message"
+        domainNewsletter "whatsapp-bot/domains/newsletter"
+        domainSend "whatsapp-bot/domains/send"
+        domainUser "whatsapp-bot/domains/user"
+        "whatsapp-bot/infrastructure/chatstorage"
+        "whatsapp-bot/infrastructure/whatsapp"
+        "whatsapp-bot/pkg/utils"
+        "whatsapp-bot/usecase"
         _ "github.com/lib/pq"
         _ "github.com/mattn/go-sqlite3"
         "github.com/sirupsen/logrus"
@@ -60,7 +60,7 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
         Short: "Send free whatsapp API",
-        Long: `This application is from clone https://github.com/aldinokemal/go-whatsapp-web-multidevice, 
+        Long: `This application is from clone https://whatsapp-bot/src, 
 you can send whatsapp over http api but your whatsapp account have to be multi device version`,
 }
 

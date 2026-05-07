@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	domainGroup "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/group"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
-	mcpHelpers "github.com/aldinokemal/go-whatsapp-web-multidevice/ui/mcp/helpers"
+	domainGroup "whatsapp-bot/domains/group"
+	"whatsapp-bot/pkg/utils"
+	mcpHelpers "whatsapp-bot/ui/mcp/helpers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"go.mau.fi/whatsmeow"

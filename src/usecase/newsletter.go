@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 
-	domainNewsletter "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/newsletter"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/validations"
+	domainNewsletter "whatsapp-bot/domains/newsletter"
+	"whatsapp-bot/infrastructure/whatsapp"
+	pkgError "whatsapp-bot/pkg/error"
+	"whatsapp-bot/pkg/utils"
+	"whatsapp-bot/validations"
 )
 
 type serviceNewsletter struct{}
