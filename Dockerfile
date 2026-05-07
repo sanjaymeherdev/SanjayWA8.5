@@ -32,6 +32,6 @@ COPY --from=builder /app/whatsapp .
 
 RUN mkdir -p /app/storages && chmod 777 /app/storages
 
-EXPOSE 3000
+EXPOSE 10000
 
-CMD ["./whatsapp", "rest", "--port=3000"]
+CMD ["./whatsapp", "rest", "--port=10000"]

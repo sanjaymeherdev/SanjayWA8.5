@@ -1,0 +1,15 @@
+Building whatsapp binary...
+Starting whatsapp REST server on port 5000...
+map[]
+[36mINFO[0m[0000] [DEVICE_MANAGER] discovered 0 device records in registry 
+[36mINFO[0m[0000] [DEVICE_MANAGER] discovered 0 device records in store 
+
+[90m[90m ┌───────────────────────────────────────────────────┐ 
+[90m │                  [96mFiber v2.52.12[90m                   │ 
+[90m │                 http://[::]:5000                  │ 
+[90m │                                                   │ 
+[90m │ Handlers ........... [96m114[90m  Processes ........... [96m1[90m │ 
+[90m │ Prefork ....... Disabled  PID .............. [96m6124[90m │ 
+[90m └───────────────────────────────────────────────────┘[0m 
+
+[33mWARN[0m[0002] auto-connect skipped: no devices available   

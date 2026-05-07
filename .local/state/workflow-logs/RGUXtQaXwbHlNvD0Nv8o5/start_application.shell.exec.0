@@ -1,0 +1,31 @@
+Building whatsapp binary...
+Starting whatsapp REST server on port 5000...
+map[]
+[36mINFO[0m[0000] [AutoPinger] Starting → pinging https://graphicy-wa--testhimrealty.replit.app every 10 minutes 
+
+[90m[90m ┌───────────────────────────────────────────────────┐ 
+[90m │                  [96mFiber v2.52.13[90m                   │ 
+[90m │                 http://[::]:5000                  │ 
+[90m │                                                   │ 
+[90m │ Handlers ............ [96m95[90m  Processes ........... [96m1[90m │ 
+[90m │ Prefork ....... Disabled  PID .............. [96m2064[90m │ 
+[90m └───────────────────────────────────────────────────┘[0m 
+
+[36mINFO[0m[0001] connection registered                        
+[36mINFO[0m[0001] message received: {LIST_DEVICES Device found []} 
+[36mINFO[0m[0002] [DEBUG] Starting reconnect process...        
+[36mINFO[0m[0002] [DEBUG] Reconnection completed - IsConnected: true, IsLoggedIn: false 
+[36mINFO[0m[0002] [DEBUG] Reconnect process completed successfully 
+[36mINFO[0m[0004] connection registered                        
+[36mINFO[0m[0004] message received: {LIST_DEVICES Device found []} 
+[36mINFO[0m[0006] connection unregistered                      
+18:07:50.255[31m [Client/Socket ERROR] Error reading from websocket: failed to get reader: failed to read frame header: EOF[0m
+[36mINFO[0m[0349] connection unregistered                      
+[36mINFO[0m[0382] connection registered                        
+[36mINFO[0m[0382] message received: {LIST_DEVICES Device found []} 
+18:12:47.950[31m [Client/Socket ERROR] Error reading from websocket: failed to get reader: failed to read frame header: EOF[0m
+[36mINFO[0m[0533] connection unregistered                      
+[36mINFO[0m[0539] connection registered                        
+[36mINFO[0m[0539] message received: {LIST_DEVICES Device found []} 
+[36mINFO[0m[0600] [AutoPinger] Ping OK → https://graphicy-wa--testhimrealty.replit.app [200] 
+[36mINFO[0m[0745] connection unregistered                      

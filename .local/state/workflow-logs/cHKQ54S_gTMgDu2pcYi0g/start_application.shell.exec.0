@@ -1,0 +1,29 @@
+Building whatsapp binary...
+Starting whatsapp REST server on port 5000...
+map[]
+[36mINFO[0m[0000] [AutoPinger] Starting → pinging https://graphicy-wa--testhimrealty.replit.app every 10 minutes 
+
+[90m[90m ┌───────────────────────────────────────────────────┐ 
+[90m │                  [96mFiber v2.52.13[90m                   │ 
+[90m │                 http://[::]:5000                  │ 
+[90m │                                                   │ 
+[90m │ Handlers ............ [96m95[90m  Processes ........... [96m1[90m │ 
+[90m │ Prefork ....... Disabled  PID .............. [96m2586[90m │ 
+[90m └───────────────────────────────────────────────────┘[0m 
+
+[36mINFO[0m[0001] connection registered                        
+[36mINFO[0m[0001] message received: {LIST_DEVICES Device found []} 
+[36mINFO[0m[0002] [DEBUG] Starting reconnect process...        
+[36mINFO[0m[0002] [DEBUG] Reconnection completed - IsConnected: true, IsLoggedIn: false 
+[36mINFO[0m[0002] [DEBUG] Reconnect process completed successfully 
+[36mINFO[0m[0008] connection registered                        
+[36mINFO[0m[0008] message received: {LIST_DEVICES Device found []} 
+[36mINFO[0m[0010] connection unregistered                      
+[36mINFO[0m[0175] connection unregistered                      
+[36mINFO[0m[0189] connection registered                        
+[36mINFO[0m[0189] message received: {LIST_DEVICES Device found []} 
+11:55:20.457[31m [Client/Socket ERROR] Error reading from websocket: failed to get reader: failed to read frame header: EOF[0m
+[36mINFO[0m[0293] connection unregistered                      
+12:00:18.362[31m [Client/Socket ERROR] Error reading from websocket: failed to get reader: failed to read frame header: EOF[0m
+[36mINFO[0m[0600] [AutoPinger] Ping OK → https://graphicy-wa--testhimrealty.replit.app [200] 
+12:05:18.679[31m [Client/Socket ERROR] Error reading from websocket: failed to get reader: failed to read frame header: EOF[0m
