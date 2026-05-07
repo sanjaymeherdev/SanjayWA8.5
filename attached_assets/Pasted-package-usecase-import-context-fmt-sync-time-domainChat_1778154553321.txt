@@ -1,0 +1,397 @@
+package usecase
+
+import (
+	"context"
+	"fmt"
+	"sync"
+	"time"
+
+	domainChat "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chat"
+	domainChatStorage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chatstorage"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/validations"
+	"github.com/patrickmn/go-cache"
+	"github.com/sirupsen/logrus"
+	"go.mau.fi/whatsmeow/appstate"
+	"golang.org/x/time/rate"
+)
+
+type serviceChat struct {
+	chatStorageRepo domainChatStorage.IChatStorageRepository
+	cache           *cache.Cache
+	requestCache    *sync.Map
+	rateLimiter     *rate.Limiter
+}
+
+func NewChatService(chatStorageRepo domainChatStorage.IChatStorageRepository) domainChat.IChatUsecase {
+	return &serviceChat{
+		chatStorageRepo: chatStorageRepo,
+		// Cache for 5 minutes, purge every 10 minutes
+		cache: cache.New(5*time.Minute, 10*time.Minute),
+		// Track duplicate requests
+		requestCache: &sync.Map{},
+		// Rate limiter: 30 requests per second, burst of 50
+		rateLimiter: rate.NewLimiter(rate.Limit(30), 50),
+	}
+}
+
+func (service serviceChat) ListChats(ctx context.Context, request domainChat.ListChatsRequest) (response domainChat.ListChatsResponse, err error) {
+	// Add timeout to prevent hanging (preserves existing behavior)
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	// Rate limiting (doesn't break existing calls)
+	if err := service.rateLimiter.Wait(ctx); err != nil {
+		logrus.WithError(err).Warn("Rate limit exceeded for ListChats")
+		// Continue anyway - don't fail the request
+	}
+
+	// Check context cancellation
+	select {
+	case <-ctx.Done():
+		return response, ctx.Err()
+	default:
+	}
+
+	// Generate cache key based on request
+	cacheKey := fmt.Sprintf("list_chats:%d:%d:%s:%v", request.Limit, request.Offset, request.Search, request.HasMedia)
+	
+	// Try to get from cache
+	if cached, found := service.cache.Get(cacheKey); found {
+		if cachedResp, ok := cached.(domainChat.ListChatsResponse); ok {
+			logrus.Debug("Returning cached ListChats response")
+			return cachedResp, nil
+		}
+	}
+
+	if err = validations.ValidateListChats(ctx, &request); err != nil {
+		return response, err
+	}
+
+	// Create filter from request
+	filter := &domainChatStorage.ChatFilter{
+		Limit:      request.Limit,
+		Offset:     request.Offset,
+		SearchName: request.Search,
+		HasMedia:   request.HasMedia,
+	}
+
+	// Get chats from storage
+	chats, err := service.chatStorageRepo.GetChats(filter)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to get chats from storage")
+		return response, err
+	}
+
+	// Get total count for pagination
+	totalCount, err := service.chatStorageRepo.GetTotalChatCount()
+	if err != nil {
+		logrus.WithError(err).Error("Failed to get total chat count")
+		// Continue with partial data (preserves existing behavior)
+		totalCount = 0
+	}
+
+	// Convert entities to domain objects
+	chatInfos := make([]domainChat.ChatInfo, 0, len(chats))
+	for _, chat := range chats {
+		chatInfo := domainChat.ChatInfo{
+			JID:                 chat.JID,
+			Name:                chat.Name,
+			LastMessageTime:     chat.LastMessageTime.Format(time.RFC3339),
+			EphemeralExpiration: chat.EphemeralExpiration,
+			CreatedAt:           chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:           chat.UpdatedAt.Format(time.RFC3339),
+		}
+		chatInfos = append(chatInfos, chatInfo)
+	}
+
+	// Create pagination response
+	pagination := domainChat.PaginationResponse{
+		Limit:  request.Limit,
+		Offset: request.Offset,
+		Total:  int(totalCount),
+	}
+
+	response.Data = chatInfos
+	response.Pagination = pagination
+
+	// Store in cache (only if not too large)
+	if len(chatInfos) <= 100 {
+		service.cache.Set(cacheKey, response, cache.DefaultExpiration)
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"total_chats": len(chatInfos),
+		"limit":       request.Limit,
+		"offset":      request.Offset,
+	}).Info("Listed chats successfully")
+
+	return response, nil
+}
+
+func (service serviceChat) GetChatMessages(ctx context.Context, request domainChat.GetChatMessagesRequest) (response domainChat.GetChatMessagesResponse, err error) {
+	// Add timeout to prevent hanging
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	// Rate limiting
+	if err := service.rateLimiter.Wait(ctx); err != nil {
+		logrus.WithError(err).Warn("Rate limit exceeded for GetChatMessages")
+		// Continue anyway
+	}
+
+	// Request deduplication to prevent duplicate processing
+	requestID := fmt.Sprintf("get_messages:%s:%d:%d:%v:%v:%s:%s", 
+		request.ChatJID, request.Limit, request.Offset, request.MediaOnly, 
+		request.IsFromMe, stringPtrToString(request.StartTime), stringPtrToString(request.EndTime))
+	
+	if _, loaded := service.requestCache.LoadOrStore(requestID, true); loaded {
+		logrus.WithField("chat_jid", request.ChatJID).Warn("Duplicate GetChatMessages request detected")
+		// Return cached response if available
+		if cached, found := service.cache.Get(requestID); found {
+			if cachedResp, ok := cached.(domainChat.GetChatMessagesResponse); ok {
+				return cachedResp, nil
+			}
+		}
+	}
+	defer service.requestCache.Delete(requestID)
+
+	// Check cache for frequently accessed messages
+	cacheKey := requestID
+	if cached, found := service.cache.Get(cacheKey); found {
+		if cachedResp, ok := cached.(domainChat.GetChatMessagesResponse); ok {
+			logrus.WithField("chat_jid", request.ChatJID).Debug("Returning cached messages")
+			return cachedResp, nil
+		}
+	}
+
+	if err = validations.ValidateGetChatMessages(ctx, &request); err != nil {
+		return response, err
+	}
+
+	// Get chat info first
+	chat, err := service.chatStorageRepo.GetChat(request.ChatJID)
+	if err != nil {
+		logrus.WithError(err).WithField("chat_jid", request.ChatJID).Error("Failed to get chat info")
+		return response, err
+	}
+	if chat == nil {
+		return response, fmt.Errorf("chat with JID %s not found", request.ChatJID)
+	}
+
+	// Create message filter from request
+	filter := &domainChatStorage.MessageFilter{
+		ChatJID:   request.ChatJID,
+		Limit:     request.Limit,
+		Offset:    request.Offset,
+		MediaOnly: request.MediaOnly,
+		IsFromMe:  request.IsFromMe,
+	}
+
+	// Parse time filters if provided
+	if request.StartTime != nil && *request.StartTime != "" {
+		startTime, err := time.Parse(time.RFC3339, *request.StartTime)
+		if err != nil {
+			return response, fmt.Errorf("invalid start_time format: %v", err)
+		}
+		filter.StartTime = &startTime
+	}
+
+	if request.EndTime != nil && *request.EndTime != "" {
+		endTime, err := time.Parse(time.RFC3339, *request.EndTime)
+		if err != nil {
+			return response, fmt.Errorf("invalid end_time format: %v", err)
+		}
+		filter.EndTime = &endTime
+	}
+
+	// Get messages from storage
+	var messages []*domainChatStorage.Message
+	if request.Search != "" {
+		// Use search functionality if search query is provided
+		messages, err = service.chatStorageRepo.SearchMessages(request.ChatJID, request.Search, request.Limit)
+		if err != nil {
+			logrus.WithError(err).WithField("chat_jid", request.ChatJID).Error("Failed to search messages")
+			return response, err
+		}
+	} else {
+		// Use regular filter
+		messages, err = service.chatStorageRepo.GetMessages(filter)
+		if err != nil {
+			logrus.WithError(err).WithField("chat_jid", request.ChatJID).Error("Failed to get messages")
+			return response, err
+		}
+	}
+
+	// Get total message count for pagination
+	totalCount, err := service.chatStorageRepo.GetChatMessageCount(request.ChatJID)
+	if err != nil {
+		logrus.WithError(err).WithField("chat_jid", request.ChatJID).Error("Failed to get message count")
+		// Continue with partial data (preserves existing behavior)
+		totalCount = 0
+	}
+
+	// Convert entities to domain objects
+	messageInfos := make([]domainChat.MessageInfo, 0, len(messages))
+	for _, message := range messages {
+		messageInfo := domainChat.MessageInfo{
+			ID:         message.ID,
+			ChatJID:    message.ChatJID,
+			SenderJID:  message.Sender,
+			Content:    message.Content,
+			Timestamp:  message.Timestamp.Format(time.RFC3339),
+			IsFromMe:   message.IsFromMe,
+			MediaType:  message.MediaType,
+			Filename:   message.Filename,
+			URL:        message.URL,
+			FileLength: message.FileLength,
+			CreatedAt:  message.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:  message.UpdatedAt.Format(time.RFC3339),
+		}
+		messageInfos = append(messageInfos, messageInfo)
+	}
+
+	// Create chat info for response
+	chatInfo := domainChat.ChatInfo{
+		JID:                 chat.JID,
+		Name:                chat.Name,
+		LastMessageTime:     chat.LastMessageTime.Format(time.RFC3339),
+		EphemeralExpiration: chat.EphemeralExpiration,
+		CreatedAt:           chat.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:           chat.UpdatedAt.Format(time.RFC3339),
+	}
+
+	// Create pagination response
+	pagination := domainChat.PaginationResponse{
+		Limit:  request.Limit,
+		Offset: request.Offset,
+		Total:  int(totalCount),
+	}
+
+	response.Data = messageInfos
+	response.Pagination = pagination
+	response.ChatInfo = chatInfo
+
+	// Cache response (only if not too large and not a search query)
+	if request.Search == "" && len(messageInfos) <= 200 {
+		service.cache.Set(cacheKey, response, 2*time.Minute)
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"chat_jid":       request.ChatJID,
+		"total_messages": len(messageInfos),
+		"limit":          request.Limit,
+		"offset":         request.Offset,
+	}).Info("Retrieved chat messages successfully")
+
+	return response, nil
+}
+
+func (service serviceChat) PinChat(ctx context.Context, request domainChat.PinChatRequest) (response domainChat.PinChatResponse, err error) {
+	// Add timeout (WhatsApp operations can be slow)
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+
+	// Rate limiting for pin operations
+	if err := service.rateLimiter.Wait(ctx); err != nil {
+		logrus.WithError(err).Warn("Rate limit exceeded for PinChat")
+	}
+
+	if err = validations.ValidatePinChat(ctx, &request); err != nil {
+		return response, err
+	}
+
+	// Validate JID and ensure connection
+	targetJID, err := utils.ValidateJidWithLogin(whatsapp.GetClient(), request.ChatJID)
+	if err != nil {
+		return response, err
+	}
+
+	// Build pin patch using whatsmeow's BuildPin
+	patchInfo := appstate.BuildPin(targetJID, request.Pinned)
+
+	// Send app state update with retry logic
+	maxRetries := 2
+	var lastErr error
+	for i := 0; i <= maxRetries; i++ {
+		if err = whatsapp.GetClient().SendAppState(ctx, patchInfo); err == nil {
+			break
+		}
+		lastErr = err
+		if i < maxRetries {
+			// Exponential backoff: 100ms, 200ms
+			time.Sleep(time.Duration(100*(1<<uint(i))) * time.Millisecond)
+			logrus.WithField("retry", i+1).Warn("Retrying PinChat operation")
+		}
+	}
+	
+	if lastErr != nil {
+		logrus.WithError(lastErr).WithFields(logrus.Fields{
+			"chat_jid": request.ChatJID,
+			"pinned":   request.Pinned,
+		}).Error("Failed to send pin chat app state after retries")
+		return response, lastErr
+	}
+
+	// Invalidate cache for this chat's messages and list
+	service.invalidateChatCache(request.ChatJID)
+
+	// Build response
+	response.Status = "success"
+	response.ChatJID = request.ChatJID
+	response.Pinned = request.Pinned
+
+	if request.Pinned {
+		response.Message = "Chat pinned successfully"
+	} else {
+		response.Message = "Chat unpinned successfully"
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"chat_jid": request.ChatJID,
+		"pinned":   request.Pinned,
+	}).Info("Chat pin operation completed successfully")
+
+	return response, nil
+}
+
+// Helper function to convert string pointer to string (empty if nil)
+func stringPtrToString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+// Helper function to invalidate cache for a specific chat
+func (service serviceChat) invalidateChatCache(chatJID string) {
+	// Delete cache entries that might contain this chat
+	service.cache.Delete(fmt.Sprintf("list_chats:%d:%d:%s:%v", 0, 0, "", false))
+	service.cache.Delete(fmt.Sprintf("get_messages:%s:%d:%d:%v:%v:%s:%s", 
+		chatJID, 0, 0, false, false, "", ""))
+	
+	logrus.WithField("chat_jid", chatJID).Debug("Invalidated cache for chat")
+}
+
+// Optional: Add health check (new function - won't break existing code)
+func (service serviceChat) HealthCheck(ctx context.Context) (map[string]interface{}, error) {
+	status := map[string]interface{}{
+		"status":    "healthy",
+		"timestamp": time.Now().Unix(),
+	}
+	
+	// Check database connection
+	if err := service.chatStorageRepo.Ping(); err != nil {
+		status["status"] = "degraded"
+		status["database_error"] = err.Error()
+	}
+	
+	// Check cache status
+	status["cache_size"] = service.cache.ItemCount()
+	
+	// Check rate limiter
+	status["rate_limit_tokens"] = service.rateLimiter.Tokens()
+	
+	return status, nil
+}

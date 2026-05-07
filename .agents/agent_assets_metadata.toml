@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "h9J2gxByRG9YTy3OhKp1V"
+uri = "file://API_README.md"
+type = "text"
+title = "GoWA API Reference — v8.5.0 Multi-Tenant"

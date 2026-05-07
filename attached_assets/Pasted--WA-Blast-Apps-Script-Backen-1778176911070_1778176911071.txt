@@ -1,0 +1,757 @@
+// ═══════════════════════════════════════════════════════════════
+// WA Blast — Apps Script Backend
+// Multi-tenant: each client gets their own sheet + device isolation
+// ═══════════════════════════════════════════════════════════════
+
+const CONFIG = {
+  USERS_SHEET:    "Users",
+  USERS_HEADERS:  ["Username", "Password", "SecurityQuestion", "SecurityAnswer", "LastLogin"],
+  DEVICE_SHEET:   "DeviceOwnership",
+  DEVICE_HEADERS: ["Username", "DeviceId", "LinkedAt", "Status"],
+  SETTINGS_ROW:   1,  // Row in client sheet where settings are stored
+  TEMPLATE_ROW:   2,  // Row in client sheet where message template is stored
+  CONTACTS_START: 4,  // Contacts start from row 4
+  CONTACTS_HEADER:["Name", "Phone", "Message", "Status", "Timestamp", "AIReply"]
+};
+
+// ── GET Handler (JSONP for browser) ──────────────────────────────────────────
+function doGet(e) {
+  const callback = e.parameter?.callback || null;
+  let result;
+  try {
+    const action = e.parameter?.action || null;
+    const data   = e.parameter || {};
+    if (!action) {
+      result = { status: "active", message: "WA Blast API running" };
+    } else {
+      switch (action) {
+        case "test":                result = { success: true, message: "Connected!" }; break;
+        case "saveSettings":        result = saveSettings(data); break;
+        case "saveTemplate":        result = saveTemplate(data); break;
+        case "saveContactsChunk":   result = saveContactsChunk(data); break;
+        case "clearContacts":       result = clearContacts(data); break;
+        case "saveLog":             result = saveLog(data); break;
+        case "updateContact":       result = updateContactStatus(data); break;
+        case "register":            result = registerUser(data); break;
+        case "login":               result = loginUser(data); break;
+        case "getSecurityQuestion": result = getSecurityQuestion(data); break;
+        case "verifyAnswer":        result = verifyAnswer(data); break;
+        case "loadClientData":      result = loadClientData(data); break;
+        case "loadContacts":        result = loadContacts(data); break;
+        case "loadLogs":            result = loadLogs(data); break;
+        // NEW DEVICE MANAGEMENT ACTIONS
+        case "getUserDevice":       result = getUserDeviceAction(data); break;
+        case "linkDevice":          result = linkDeviceAction(data); break;
+        case "unlinkDevice":        result = unlinkDeviceAction(data); break;
+        case "validateDevice":      result = validateDeviceAction(data); break;
+        default: result = { success: false, message: "Unknown action: " + action };
+      }
+    }
+  } catch (err) {
+    result = { success: false, message: "Server error: " + err.toString() };
+  }
+  result.timestamp = new Date().toISOString();
+  if (callback) {
+    return ContentService
+      .createTextOutput(callback + "(" + JSON.stringify(result) + ")")
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService
+    .createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── POST Handler ──────────────────────────────────────────────────────────────
+function doPost(e) {
+  try {
+    let action, data;
+    if (e.parameter?.action) {
+      action = e.parameter.action;
+      data   = e.parameter;
+    } else if (e.postData?.contents) {
+      const parsed = JSON.parse(e.postData.contents);
+      action = parsed.action;
+      data   = parsed.data || parsed;
+    } else {
+      return sendResponse({ success: false, message: "No data received" }, "error");
+    }
+    let result;
+    switch (action) {
+      case "register":       result = registerUser(data); break;
+      case "login":          result = loginUser(data); break;
+      case "saveSettings":   result = saveSettings(data); break;
+      case "saveTemplate":   result = saveTemplate(data); break;
+      case "saveContacts":   result = saveContacts(data); break;
+      case "saveLog":        result = saveLog(data); break;
+      case "updateContact":  result = updateContactStatus(data); break;
+      case "clearContacts":  result = clearContacts(data); break;
+      case "getUserDevice":  result = getUserDeviceAction(data); break;
+      case "linkDevice":     result = linkDeviceAction(data); break;
+      case "unlinkDevice":   result = unlinkDeviceAction(data); break;
+      case "validateDevice": result = validateDeviceAction(data); break;
+      default: result = { success: false, message: "Unknown action: " + action };
+    }
+    return sendResponse(result, action);
+  } catch (err) {
+    return sendResponse({ success: false, message: "Server error: " + err.toString() }, "error");
+  }
+}
+
+function sendResponse(data, action) {
+  data.action_context = action;
+  data.timestamp = new Date().toISOString();
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DEVICE MANAGEMENT SHEET
+// ═══════════════════════════════════════════════════════════════
+
+function getDeviceSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(CONFIG.DEVICE_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.DEVICE_SHEET);
+    sheet.getRange(1, 1, 1, CONFIG.DEVICE_HEADERS.length).setValues([CONFIG.DEVICE_HEADERS]);
+    sheet.getRange(1, 1, 1, CONFIG.DEVICE_HEADERS.length).setFontWeight("bold");
+  }
+  return sheet;
+}
+
+// Get user's linked device
+function getUserDevice(username) {
+  const sheet = getDeviceSheet();
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === username && data[i][3] === "active") {
+      return {
+        deviceId: data[i][1],
+        linkedAt: data[i][2]
+      };
+    }
+  }
+  return null;
+}
+
+// Link device to user (removes any existing first)
+function linkDeviceToUser(username, deviceId) {
+  const sheet = getDeviceSheet();
+  const data = sheet.getDataRange().getValues();
+  
+  // First, remove any existing device for this user (one device per user)
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === username) {
+      sheet.deleteRow(i + 1);
+    }
+  }
+  
+  // Also check if this device is already linked to another user
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][1] === deviceId && data[i][0] !== username) {
+      return { 
+        success: false, 
+        message: "This device is already linked to another user: " + data[i][0] 
+      };
+    }
+  }
+  
+  // Add new device
+  sheet.appendRow([username, deviceId, new Date().toISOString(), "active"]);
+  return { success: true, message: "Device linked successfully" };
+}
+
+// Unlink user's device
+function unlinkUserDevice(username) {
+  const sheet = getDeviceSheet();
+  const data = sheet.getDataRange().getValues();
+  let deleted = false;
+  
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === username) {
+      sheet.deleteRow(i + 1);
+      deleted = true;
+    }
+  }
+  
+  return { success: true, message: deleted ? "Device unlinked" : "No device found" };
+}
+
+// Validate if a device belongs to user
+function validateUserDevice(username, deviceId) {
+  const userDevice = getUserDevice(username);
+  if (!userDevice) return false;
+  return userDevice.deviceId === deviceId;
+}
+
+// API action wrappers
+function getUserDeviceAction(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  if (!findUser(username)) return { success: false, message: "User not found" };
+  
+  const device = getUserDevice(username);
+  return { 
+    success: true, 
+    hasDevice: !!device,
+    deviceId: device ? device.deviceId : null,
+    linkedAt: device ? device.linkedAt : null
+  };
+}
+
+function linkDeviceAction(data) {
+  const username = (data.username || "").trim();
+  const deviceId = (data.deviceId || "").trim();
+  
+  if (!username || !deviceId) 
+    return { success: false, message: "Username and deviceId required" };
+  
+  if (!findUser(username)) 
+    return { success: false, message: "User not found" };
+  
+  const result = linkDeviceToUser(username, deviceId);
+  
+  // Also save deviceId to user's settings sheet for quick access
+  if (result.success) {
+    const sheet = getClientSheet(username);
+    if (sheet) {
+      let settings = {};
+      try { settings = JSON.parse(sheet.getRange(1, 1).getValue() || "{}"); } catch(e) {}
+      settings.deviceId = deviceId;
+      sheet.getRange(1, 1).setValue(JSON.stringify(settings));
+    }
+  }
+  
+  return result;
+}
+
+function unlinkDeviceAction(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  
+  const result = unlinkUserDevice(username);
+  
+  // Also remove deviceId from user's settings sheet
+  if (result.success) {
+    const sheet = getClientSheet(username);
+    if (sheet) {
+      let settings = {};
+      try { settings = JSON.parse(sheet.getRange(1, 1).getValue() || "{}"); } catch(e) {}
+      delete settings.deviceId;
+      sheet.getRange(1, 1).setValue(JSON.stringify(settings));
+    }
+  }
+  
+  return result;
+}
+
+function validateDeviceAction(data) {
+  const username = (data.username || "").trim();
+  const deviceId = (data.deviceId || "").trim();
+  
+  if (!username || !deviceId) 
+    return { success: false, message: "Username and deviceId required" };
+  
+  const isValid = validateUserDevice(username, deviceId);
+  return { success: isValid, valid: isValid };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// USERS SHEET HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+function getUsersSheet() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet   = ss.getSheetByName(CONFIG.USERS_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.USERS_SHEET);
+    sheet.getRange(1, 1, 1, CONFIG.USERS_HEADERS.length).setValues([CONFIG.USERS_HEADERS]);
+  }
+  return sheet;
+}
+
+function findUser(username) {
+  if (!username) return null;
+  const term  = username.toString().toLowerCase().trim();
+  const sheet = getUsersSheet();
+  const data  = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0].toString().toLowerCase().trim() === term) {
+      return {
+        rowIndex:         i + 1,
+        username:         data[i][0],
+        password:         data[i][1],
+        securityQuestion: data[i][2],
+        securityAnswer:   data[i][3],
+        lastLogin:        data[i][4]
+      };
+    }
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CLIENT SHEET HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+function getClientSheetName(username) {
+  return "client_" + username.toLowerCase().trim();
+}
+
+function getLogSheetName(username) {
+  return "log_" + username.toLowerCase().trim();
+}
+
+function createClientSheet(username) {
+  const ss        = SpreadsheetApp.getActiveSpreadsheet();
+  const sheetName = getClientSheetName(username);
+  let sheet       = ss.getSheetByName(sheetName);
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet(sheetName);
+
+  // Row 1 — Settings (stored as JSON in cell A1)
+  const defaultSettings = {
+    serverUrl:     "",
+    hourLimit:     30,
+    dayLimit:      200,
+    minGap:        30,
+    maxGap:        90,
+    autoReply:     false,
+    autoReplyPrompt: "",
+    pauseOnReply:  true,
+    aiRewrite:     false,
+    rewritePrompt: ""
+  };
+  sheet.getRange(1, 1).setValue(JSON.stringify(defaultSettings));
+  sheet.getRange(1, 2).setValue("SETTINGS");
+
+  // Row 2 — Message template (stored as JSON in cell A2)
+  const defaultTemplate = {
+    body:          "",
+    attachType:    "none",
+    attachUrl:     "",
+    pollQuestion:  "",
+    pollOptions:   []
+  };
+  sheet.getRange(2, 1).setValue(JSON.stringify(defaultTemplate));
+  sheet.getRange(2, 2).setValue("TEMPLATE");
+
+  // Row 3 — Contacts header
+  sheet.getRange(3, 1, 1, CONFIG.CONTACTS_HEADER.length).setValues([CONFIG.CONTACTS_HEADER]);
+  sheet.getRange(3, 1, 1, CONFIG.CONTACTS_HEADER.length).setFontWeight("bold");
+
+  // Basic formatting
+  sheet.setColumnWidth(1, 150);
+  sheet.setColumnWidth(2, 140);
+  sheet.setColumnWidth(3, 250);
+  sheet.setColumnWidth(4, 100);
+  sheet.setColumnWidth(5, 160);
+  sheet.setColumnWidth(6, 200);
+
+  return sheet;
+}
+
+function createLogSheet(username) {
+  const ss        = SpreadsheetApp.getActiveSpreadsheet();
+  const sheetName = getLogSheetName(username);
+  let sheet       = ss.getSheetByName(sheetName);
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet(sheetName);
+  const headers = ["Timestamp", "Type", "Name", "Phone", "Message", "Status"];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
+  return sheet;
+}
+
+function getClientSheet(username) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(getClientSheetName(username));
+  if (!sheet) return null;
+  return sheet;
+}
+
+function getLogSheet(username) {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(getLogSheetName(username));
+  if (!sheet) return null;
+  return sheet;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AUTH ACTIONS
+// ═══════════════════════════════════════════════════════════════
+
+function registerUser(data) {
+  const username         = (data.username         || "").trim();
+  const password         = (data.password         || "").trim();
+  const securityQuestion = (data.securityQuestion || "").trim();
+  const securityAnswer   = (data.securityAnswer   || "").trim();
+
+  if (!username || !password || !securityQuestion || !securityAnswer)
+    return { success: false, message: "All fields are required" };
+
+  if (findUser(username))
+    return { success: false, message: "Username already taken" };
+
+  // Validate username — letters, numbers, underscore only
+  if (!/^[a-zA-Z0-9_]+$/.test(username))
+    return { success: false, message: "Username can only contain letters, numbers and underscore" };
+
+  const timestamp = new Date().toISOString();
+  getUsersSheet().appendRow([username, password, securityQuestion, securityAnswer, timestamp]);
+
+  // Auto create their client sheet and log sheet
+  createClientSheet(username);
+  createLogSheet(username);
+
+  return {
+    success:  true,
+    message:  "Registration successful",
+    username: username,
+    lastLogin: timestamp
+  };
+}
+
+function loginUser(data) {
+  const username = (data.username || "").trim();
+  const password = (data.password || "").trim();
+
+  if (!username || !password)
+    return { success: false, message: "Username and password required" };
+
+  const user = findUser(username);
+  if (!user)                      return { success: false, message: "User not found" };
+  if (user.password !== password) return { success: false, message: "Incorrect password" };
+
+  // Update last login
+  const timestamp = new Date().toISOString();
+  getUsersSheet().getRange(user.rowIndex, 5).setValue(timestamp);
+
+  // Make sure their sheets exist (in case they were deleted)
+  createClientSheet(username);
+  createLogSheet(username);
+
+  // Load all their data in one shot
+  const clientData = loadAllClientData(username);
+  
+  // Also get their linked device
+  const userDevice = getUserDevice(username);
+
+  return {
+    success:   true,
+    message:   "Login successful",
+    username:  user.username,
+    lastLogin: timestamp,
+    settings:  clientData.settings,
+    template:  clientData.template,
+    contacts:  clientData.contacts,
+    deviceId:  userDevice ? userDevice.deviceId : null
+  };
+}
+
+function getSecurityQuestion(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  const user = findUser(username);
+  if (!user) return { success: false, message: "User not found" };
+  return { success: true, question: user.securityQuestion, username: user.username };
+}
+
+function verifyAnswer(data) {
+  const username = (data.username || "").trim();
+  const answer   = (data.answer   || "").trim();
+  if (!username || !answer) return { success: false, message: "Username and answer required" };
+  const user = findUser(username);
+  if (!user) return { success: false, message: "User not found" };
+  if (user.securityAnswer.toLowerCase().trim() !== answer.toLowerCase())
+    return { success: false, message: "Incorrect answer" };
+  return { success: true, message: "Answer verified", password: user.password };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CLIENT DATA ACTIONS
+// ═══════════════════════════════════════════════════════════════
+
+function loadAllClientData(username) {
+  const sheet = getClientSheet(username);
+  if (!sheet) return { settings: {}, template: {}, contacts: [] };
+
+  // Load settings from row 1
+  let settings = {};
+  try { settings = JSON.parse(sheet.getRange(1, 1).getValue() || "{}"); } catch(e) { settings = {}; }
+
+  // Load template from row 2
+  let template = {};
+  try { template = JSON.parse(sheet.getRange(2, 1).getValue() || "{}"); } catch(e) { template = {}; }
+
+  // Load contacts from row 4 onwards
+  const contacts = [];
+  const lastRow  = sheet.getLastRow();
+  if (lastRow >= CONFIG.CONTACTS_START) {
+    const rows = sheet.getRange(CONFIG.CONTACTS_START, 1, lastRow - CONFIG.CONTACTS_START + 1, 6).getValues();
+    rows.forEach((row, i) => {
+      if (row[0] || row[1]) {
+        contacts.push({
+          id:      i + CONFIG.CONTACTS_START,
+          name:    row[0],
+          phone:   row[1],
+          message: row[2],
+          status:  row[3] || "pending",
+          timestamp: row[4],
+          aiReply: row[5]
+        });
+      }
+    });
+  }
+
+  return { settings, template, contacts };
+}
+
+// Called via GET for explicit reload
+function loadClientData(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  if (!findUser(username)) return { success: false, message: "User not found" };
+  const clientData = loadAllClientData(username);
+  return { success: true, ...clientData };
+}
+
+function saveSettings(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  const settings = {
+    serverUrl:       data.serverUrl       || "",
+    hourLimit:       parseInt(data.hourLimit)  || 30,
+    dayLimit:        parseInt(data.dayLimit)   || 200,
+    minGap:          parseInt(data.minGap)     || 30,
+    maxGap:          parseInt(data.maxGap)     || 90,
+    autoReply:       data.autoReply === "true" || data.autoReply === true,
+    autoReplyPrompt: data.autoReplyPrompt || "",
+    pauseOnReply:    data.pauseOnReply !== "false" && data.pauseOnReply !== false,
+    aiRewrite:       data.aiRewrite === "true" || data.aiRewrite === true,
+    rewritePrompt:   data.rewritePrompt || ""
+  };
+  
+  // If deviceId is provided, save it too (but don't overwrite if not provided)
+  if (data.deviceId) {
+    settings.deviceId = data.deviceId;
+  }
+
+  sheet.getRange(1, 1).setValue(JSON.stringify(settings));
+  return { success: true, message: "Settings saved" };
+}
+
+function saveTemplate(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  const template = {
+    body:         data.body         || "",
+    attachType:   data.attachType   || "none",
+    attachUrl:    data.attachUrl    || "",
+    pollQuestion: data.pollQuestion || "",
+    pollOptions:  data.pollOptions  ? JSON.parse(data.pollOptions) : []
+  };
+
+  sheet.getRange(2, 1).setValue(JSON.stringify(template));
+  return { success: true, message: "Template saved" };
+}
+
+function saveContacts(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  let contacts = [];
+  try { contacts = JSON.parse(data.contacts || "[]"); } catch(e) { return { success: false, message: "Invalid contacts data" }; }
+
+  if (!contacts.length) return { success: false, message: "No contacts to save" };
+
+  // Clear old contacts (from row 4 onwards)
+  const lastRow = sheet.getLastRow();
+  if (lastRow >= CONFIG.CONTACTS_START) {
+    sheet.getRange(CONFIG.CONTACTS_START, 1, lastRow - CONFIG.CONTACTS_START + 1, 6).clearContent();
+  }
+
+  // Write new contacts
+  const rows = contacts.map(c => [
+    c.name    || "",
+    c.phone   || "",
+    c.message || "",
+    c.status  || "pending",
+    c.timestamp || new Date().toISOString(),
+    c.aiReply || ""
+  ]);
+
+  sheet.getRange(CONFIG.CONTACTS_START, 1, rows.length, 6).setValues(rows);
+  return { success: true, message: contacts.length + " contacts saved" };
+}
+
+function loadContacts(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  const contacts = [];
+  const lastRow  = sheet.getLastRow();
+  if (lastRow >= CONFIG.CONTACTS_START) {
+    const rows = sheet.getRange(CONFIG.CONTACTS_START, 1, lastRow - CONFIG.CONTACTS_START + 1, 6).getValues();
+    rows.forEach((row, i) => {
+      if (row[0] || row[1]) {
+        contacts.push({
+          id:        i + CONFIG.CONTACTS_START,
+          name:      row[0],
+          phone:     row[1],
+          message:   row[2],
+          status:    row[3] || "pending",
+          timestamp: row[4],
+          aiReply:   row[5]
+        });
+      }
+    });
+  }
+  return { success: true, contacts };
+}
+
+function updateContactStatus(data) {
+  const username = (data.username || "").trim();
+  const rowIndex = parseInt(data.rowIndex);
+  const status   = (data.status || "").trim();
+  const aiReply  = (data.aiReply || "").trim();
+
+  if (!username || !rowIndex || !status) return { success: false, message: "Missing fields" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  sheet.getRange(rowIndex, 4).setValue(status);
+  sheet.getRange(rowIndex, 5).setValue(new Date().toISOString());
+  if (aiReply) sheet.getRange(rowIndex, 6).setValue(aiReply);
+
+  return { success: true, message: "Contact updated" };
+}
+
+function clearContacts(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow >= CONFIG.CONTACTS_START) {
+    sheet.getRange(CONFIG.CONTACTS_START, 1, lastRow - CONFIG.CONTACTS_START + 1, 6).clearContent();
+  }
+  return { success: true, message: "Contacts cleared" };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LOGS
+// ═══════════════════════════════════════════════════════════════
+
+function saveLog(data) {
+  const username = (data.username || "").trim();
+  if (!username) return { success: false, message: "Username required" };
+
+  let sheet = getLogSheet(username);
+  if (!sheet) sheet = createLogSheet(username);
+
+  sheet.appendRow([
+    new Date().toISOString(),
+    data.type    || "sent",
+    data.name    || "",
+    data.phone   || "",
+    data.message || "",
+    data.status  || ""
+  ]);
+
+  return { success: true, message: "Log saved" };
+}
+
+function loadLogs(data) {
+  const username = (data.username || "").trim();
+  const limit    = parseInt(data.limit) || 100;
+  if (!username) return { success: false, message: "Username required" };
+
+  const sheet = getLogSheet(username);
+  if (!sheet) return { success: true, logs: [] };
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow <= 1) return { success: true, logs: [] };
+
+  const startRow = Math.max(2, lastRow - limit + 1);
+  const rows     = sheet.getRange(startRow, 1, lastRow - startRow + 1, 6).getValues();
+
+  // Return newest first
+  const logs = rows.reverse().map(row => ({
+    timestamp: row[0],
+    type:      row[1],
+    name:      row[2],
+    phone:     row[3],
+    message:   row[4],
+    status:    row[5]
+  }));
+
+  return { success: true, logs };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SAVE CONTACTS IN CHUNKS (avoids URL length limit)
+// Called multiple times with chunk index
+// ═══════════════════════════════════════════════════════════════
+function saveContactsChunk(data) {
+  const username   = (data.username   || "").trim();
+  const chunkIndex = parseInt(data.chunkIndex || "0");
+  const totalChunks= parseInt(data.totalChunks || "1");
+  const isFirst    = chunkIndex === 0;
+
+  if (!username) return { success: false, message: "Username required" };
+  const sheet = getClientSheet(username);
+  if (!sheet) return { success: false, message: "Client sheet not found" };
+
+  let chunk = [];
+  try { chunk = JSON.parse(data.chunk || "[]"); }
+  catch(e) { return { success: false, message: "Invalid chunk data" }; }
+
+  // If first chunk — clear existing contacts first
+  if (isFirst) {
+    const lastRow = sheet.getLastRow();
+    if (lastRow >= CONFIG.CONTACTS_START) {
+      sheet.getRange(CONFIG.CONTACTS_START, 1, lastRow - CONFIG.CONTACTS_START + 1, 6).clearContent();
+    }
+  }
+
+  if (!chunk.length) return { success: true, message: "Empty chunk skipped" };
+
+  // Calculate where to write this chunk
+  const chunkSize  = chunk.length;
+  const startRow   = CONFIG.CONTACTS_START + (chunkIndex * 20); // 20 per chunk
+
+  const rows = chunk.map(c => [
+    c.name    || "",
+    c.phone   || "",
+    c.message || "",
+    c.status  || "pending",
+    c.timestamp || new Date().toISOString(),
+    c.aiReply || ""
+  ]);
+
+  sheet.getRange(startRow, 1, rows.length, 6).setValues(rows);
+
+  const done = chunkIndex + 1 >= totalChunks;
+  return {
+    success:     true,
+    message:     `Chunk ${chunkIndex + 1}/${totalChunks} saved`,
+    done:        done,
+    chunkIndex:  chunkIndex,
+    totalChunks: totalChunks
+  };
+}
