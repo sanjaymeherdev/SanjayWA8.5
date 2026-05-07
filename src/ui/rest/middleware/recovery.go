@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	pkgError "whatsappbot/pkg/error"
-	"whatsappbot/pkg/utils"
+	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 )

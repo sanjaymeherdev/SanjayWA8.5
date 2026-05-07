@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	domainSend "whatsappbot/domains/send"
-	mcpHelpers "whatsappbot/ui/mcp/helpers"
+	domainSend "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/send"
+	mcpHelpers "github.com/aldinokemal/go-whatsapp-web-multidevice/ui/mcp/helpers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

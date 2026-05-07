@@ -1,4 +1,4 @@
-module whatsappbot
+module github.com/aldinokemal/go-whatsapp-web-multidevice
 
 go 1.25.5
 

@@ -1,9 +1,9 @@
 package rest
 
 import (
-	domainMessage "whatsappbot/domains/message"
-	"whatsappbot/infrastructure/whatsapp"
-	"whatsappbot/pkg/utils"
+	domainMessage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/message"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

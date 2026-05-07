@@ -1,8 +1,8 @@
 package rest
 
 import (
-	"whatsappbot/domains/device"
-	"whatsappbot/pkg/utils"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/domains/device"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

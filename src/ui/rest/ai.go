@@ -1,8 +1,8 @@
 package rest
 
 import (
-	domainAI "whatsappbot/domains/ai"
-	"whatsappbot/pkg/utils"
+	domainAI "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/ai"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

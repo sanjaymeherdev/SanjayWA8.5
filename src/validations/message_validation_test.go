@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainMessage "whatsappbot/domains/message"
-	pkgError "whatsappbot/pkg/error"
+	domainMessage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/message"
+	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

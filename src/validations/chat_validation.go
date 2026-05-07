@@ -3,8 +3,8 @@ package validations
 import (
 	"context"
 
-	domainChat "whatsappbot/domains/chat"
-	pkgError "whatsappbot/pkg/error"
+	domainChat "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chat"
+	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 

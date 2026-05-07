@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"whatsappbot/infrastructure/whatsapp"
+	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
 )
 
 // ContextWithDefaultDevice resolves the default device from the global DeviceManager
