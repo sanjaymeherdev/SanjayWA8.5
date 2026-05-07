@@ -9,12 +9,12 @@ import (
 	"sync"
 	"time"
 
-	domainChatStorage "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chatstorage"
-	domainUser "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/user"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/validations"
+	domainChatStorage "sanjaywa/domains/chatstorage"
+	domainUser "sanjaywa/domains/user"
+	"sanjaywa/infrastructure/whatsapp"
+	pkgError "sanjaywa/pkg/error"
+	"sanjaywa/pkg/utils"
+	"sanjaywa/validations"
 	"github.com/disintegration/imaging"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow"
@@ -192,7 +192,7 @@ func (service serviceUser) Avatar(ctx context.Context, request domainUser.Avatar
 // imposed by WhatsApp's multi-device protocol. Pagination is not supported by WhatsApp for this query.
 //
 // For more details, see: https://github.com/tulir/whatsmeow/blob/main/group.go
-// Related issue: https://github.com/aldinokemal/go-whatsapp-web-multidevice/issues/553
+// Related issue: https://sanjaywa/issues/553
 func (service serviceUser) MyListGroups(ctx context.Context) (response domainUser.MyListGroupsResponse, err error) {
 	client := whatsapp.ClientFromContext(ctx)
 	if client == nil {

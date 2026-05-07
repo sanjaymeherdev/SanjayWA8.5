@@ -8,9 +8,9 @@ import (
         "io"
         "net/http"
 
-        "github.com/aldinokemal/go-whatsapp-web-multidevice/config"
-        domainAI "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/ai"
-        pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
+        "sanjaywa/config"
+        domainAI "sanjaywa/domains/ai"
+        pkgError "sanjaywa/pkg/error"
 )
 
 type serviceAI struct{}

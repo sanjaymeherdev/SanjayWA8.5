@@ -15,8 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/config"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
+	"sanjaywa/config"
+	"sanjaywa/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 

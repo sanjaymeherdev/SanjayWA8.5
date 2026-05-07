@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	domainApp "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/app"
+	domainApp "sanjaywa/domains/app"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainNewsletter "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/newsletter"
-	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
+	domainNewsletter "sanjaywa/domains/newsletter"
+	pkgError "sanjaywa/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -8,12 +8,12 @@ import (
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/types"
 
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/config"
-	domainGroup "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/group"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-	pkgError "github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/error"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/validations"
+	"sanjaywa/config"
+	domainGroup "sanjaywa/domains/group"
+	"sanjaywa/infrastructure/whatsapp"
+	pkgError "sanjaywa/pkg/error"
+	"sanjaywa/pkg/utils"
+	"sanjaywa/validations"
 )
 
 type serviceGroup struct{}

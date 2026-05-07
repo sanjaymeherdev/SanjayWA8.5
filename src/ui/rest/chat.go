@@ -1,9 +1,9 @@
 package rest
 
 import (
-	domainChat "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/chat"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
-	"github.com/aldinokemal/go-whatsapp-web-multidevice/pkg/utils"
+	domainChat "sanjaywa/domains/chat"
+	"sanjaywa/infrastructure/whatsapp"
+	"sanjaywa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
