@@ -6,12 +6,10 @@ RUN apk add --no-cache \
     musl-dev \
     sqlite-dev
 WORKDIR /app
-COPY src/go.mod src/go.sum ./
-RUN CGO_ENABLED=1 go mod download
 COPY src/ ./
 ENV CGO_ENABLED=1
 ENV GOOS=linux
-RUN go mod tidy && go build -v -ldflags="-w -s" -o whatsapp .
+RUN go mod download && go build -v -ldflags="-w -s" -o whatsapp .
 FROM alpine:latest
 RUN apk add --no-cache \
     ffmpeg \
