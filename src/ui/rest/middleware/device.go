@@ -4,9 +4,9 @@ import (
 	"net/url"
 	"strings"
 
-	"sanjaywa/config"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	"sanjaywa.com/wa/config"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

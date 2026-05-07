@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"sanjaywa/pkg/utils"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

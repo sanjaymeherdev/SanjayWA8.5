@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	pkgError "sanjaywa/pkg/error"
-	"sanjaywa/pkg/utils"
+	pkgError "sanjaywa.com/wa/pkg/error"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 )

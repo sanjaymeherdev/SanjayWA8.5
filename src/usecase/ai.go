@@ -8,9 +8,9 @@ import (
         "io"
         "net/http"
 
-        "sanjaywa/config"
-        domainAI "sanjaywa/domains/ai"
-        pkgError "sanjaywa/pkg/error"
+        "sanjaywa.com/wa/config"
+        domainAI "sanjaywa.com/wa/domains/ai"
+        pkgError "sanjaywa.com/wa/pkg/error"
 )
 
 type serviceAI struct{}

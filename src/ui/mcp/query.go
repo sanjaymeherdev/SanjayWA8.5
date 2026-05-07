@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	domainChat "sanjaywa/domains/chat"
-	domainMessage "sanjaywa/domains/message"
-	domainUser "sanjaywa/domains/user"
-	"sanjaywa/pkg/utils"
-	mcpHelpers "sanjaywa/ui/mcp/helpers"
+	domainChat "sanjaywa.com/wa/domains/chat"
+	domainMessage "sanjaywa.com/wa/domains/message"
+	domainUser "sanjaywa.com/wa/domains/user"
+	"sanjaywa.com/wa/pkg/utils"
+	mcpHelpers "sanjaywa.com/wa/ui/mcp/helpers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

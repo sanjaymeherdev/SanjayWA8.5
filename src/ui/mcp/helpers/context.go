@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"sanjaywa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
 )
 
 // ContextWithDefaultDevice resolves the default device from the global DeviceManager

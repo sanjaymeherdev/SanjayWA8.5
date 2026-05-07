@@ -1,9 +1,9 @@
 package rest
 
 import (
-	domainNewsletter "sanjaywa/domains/newsletter"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	domainNewsletter "sanjaywa.com/wa/domains/newsletter"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

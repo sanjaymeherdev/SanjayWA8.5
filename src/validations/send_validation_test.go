@@ -5,9 +5,9 @@ import (
 	"mime/multipart"
 	"testing"
 
-	domainMessage "sanjaywa/domains/message"
-	domainSend "sanjaywa/domains/send"
-	pkgError "sanjaywa/pkg/error"
+	domainMessage "sanjaywa.com/wa/domains/message"
+	domainSend "sanjaywa.com/wa/domains/send"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

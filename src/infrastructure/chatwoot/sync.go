@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	domainChatStorage "sanjaywa/domains/chatstorage"
-	"sanjaywa/pkg/utils"
+	domainChatStorage "sanjaywa.com/wa/domains/chatstorage"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/proto/waE2E"

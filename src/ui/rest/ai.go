@@ -1,8 +1,8 @@
 package rest
 
 import (
-	domainAI "sanjaywa/domains/ai"
-	"sanjaywa/pkg/utils"
+	domainAI "sanjaywa.com/wa/domains/ai"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

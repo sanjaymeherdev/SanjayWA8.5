@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"sanjaywa/config"
-	"sanjaywa/pkg/utils"
+	"sanjaywa.com/wa/config"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )

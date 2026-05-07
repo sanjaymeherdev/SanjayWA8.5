@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 
-	domainNewsletter "sanjaywa/domains/newsletter"
-	"sanjaywa/infrastructure/whatsapp"
-	pkgError "sanjaywa/pkg/error"
-	"sanjaywa/pkg/utils"
-	"sanjaywa/validations"
+	domainNewsletter "sanjaywa.com/wa/domains/newsletter"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	pkgError "sanjaywa.com/wa/pkg/error"
+	"sanjaywa.com/wa/pkg/utils"
+	"sanjaywa.com/wa/validations"
 )
 
 type serviceNewsletter struct{}

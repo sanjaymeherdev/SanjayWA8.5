@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	domainGroup "sanjaywa/domains/group"
-	"sanjaywa/pkg/utils"
-	mcpHelpers "sanjaywa/ui/mcp/helpers"
+	domainGroup "sanjaywa.com/wa/domains/group"
+	"sanjaywa.com/wa/pkg/utils"
+	mcpHelpers "sanjaywa.com/wa/ui/mcp/helpers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"go.mau.fi/whatsmeow"

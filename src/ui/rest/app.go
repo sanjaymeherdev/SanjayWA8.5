@@ -3,10 +3,10 @@ package rest
 import (
 	"fmt"
 
-	"sanjaywa/config"
-	domainApp "sanjaywa/domains/app"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	"sanjaywa.com/wa/config"
+	domainApp "sanjaywa.com/wa/domains/app"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

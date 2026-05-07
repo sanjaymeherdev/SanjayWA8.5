@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/ui/rest/helpers"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/ui/rest/helpers"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow"
 )

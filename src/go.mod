@@ -1,4 +1,4 @@
-module sanjaywa
+module sanjaywa.com/wa
 
 go 1.25.5
 

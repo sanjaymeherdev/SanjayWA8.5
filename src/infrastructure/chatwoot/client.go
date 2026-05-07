@@ -15,8 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"sanjaywa/config"
-	"sanjaywa/pkg/utils"
+	"sanjaywa.com/wa/config"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 

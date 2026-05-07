@@ -8,9 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	domainGroup "sanjaywa/domains/group"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	domainGroup "sanjaywa.com/wa/domains/group"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.mau.fi/whatsmeow"
 )

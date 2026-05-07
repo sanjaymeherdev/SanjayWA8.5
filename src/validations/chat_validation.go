@@ -3,8 +3,8 @@ package validations
 import (
 	"context"
 
-	domainChat "sanjaywa/domains/chat"
-	pkgError "sanjaywa/pkg/error"
+	domainChat "sanjaywa.com/wa/domains/chat"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 

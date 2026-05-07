@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	domainSend "sanjaywa/domains/send"
-	mcpHelpers "sanjaywa/ui/mcp/helpers"
+	domainSend "sanjaywa.com/wa/domains/send"
+	mcpHelpers "sanjaywa.com/wa/ui/mcp/helpers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

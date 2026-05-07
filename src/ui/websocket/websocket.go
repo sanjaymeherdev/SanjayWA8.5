@@ -6,7 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	domainApp "sanjaywa/domains/app"
+	domainApp "sanjaywa.com/wa/domains/app"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )

@@ -1,9 +1,9 @@
 package rest
 
 import (
-	domainMessage "sanjaywa/domains/message"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	domainMessage "sanjaywa.com/wa/domains/message"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

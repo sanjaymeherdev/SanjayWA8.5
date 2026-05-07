@@ -8,12 +8,12 @@ import (
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/types"
 
-	"sanjaywa/config"
-	domainGroup "sanjaywa/domains/group"
-	"sanjaywa/infrastructure/whatsapp"
-	pkgError "sanjaywa/pkg/error"
-	"sanjaywa/pkg/utils"
-	"sanjaywa/validations"
+	"sanjaywa.com/wa/config"
+	domainGroup "sanjaywa.com/wa/domains/group"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	pkgError "sanjaywa.com/wa/pkg/error"
+	"sanjaywa.com/wa/pkg/utils"
+	"sanjaywa.com/wa/validations"
 )
 
 type serviceGroup struct{}

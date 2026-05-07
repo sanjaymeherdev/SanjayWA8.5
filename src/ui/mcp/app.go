@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	domainApp "sanjaywa/domains/app"
+	domainApp "sanjaywa.com/wa/domains/app"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

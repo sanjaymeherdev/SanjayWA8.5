@@ -5,12 +5,12 @@ import (
         "net/http"
         "strings"
 
-        "sanjaywa/config"
-        "sanjaywa/infrastructure/whatsapp"
-        "sanjaywa/ui/rest"
-        "sanjaywa/ui/rest/helpers"
-        "sanjaywa/ui/rest/middleware"
-        "sanjaywa/ui/websocket"
+        "sanjaywa.com/wa/config"
+        "sanjaywa.com/wa/infrastructure/whatsapp"
+        "sanjaywa.com/wa/ui/rest"
+        "sanjaywa.com/wa/ui/rest/helpers"
+        "sanjaywa.com/wa/ui/rest/middleware"
+        "sanjaywa.com/wa/ui/websocket"
         "github.com/dustin/go-humanize"
         "github.com/gofiber/fiber/v2"
         "github.com/gofiber/fiber/v2/middleware/basicauth"
@@ -26,7 +26,7 @@ import (
 var restCmd = &cobra.Command{
         Use:   "rest",
         Short: "Send whatsapp API over http",
-        Long:  `This application is from clone https://sanjaywa/src`,
+        Long:  `This application is from clone https://sanjaywa.com/wa/src`,
         Run:   restServer,
 }
 

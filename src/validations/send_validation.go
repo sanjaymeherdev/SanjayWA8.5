@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"sort"
 
-	"sanjaywa/config"
-	domainSend "sanjaywa/domains/send"
-	pkgError "sanjaywa/pkg/error"
+	"sanjaywa.com/wa/config"
+	domainSend "sanjaywa.com/wa/domains/send"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	"github.com/dustin/go-humanize"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"

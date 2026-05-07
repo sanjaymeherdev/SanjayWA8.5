@@ -11,21 +11,21 @@ import (
 
         "go.mau.fi/whatsmeow/store/sqlstore"
 
-        "sanjaywa/config"
-        domainAI "sanjaywa/domains/ai"
-        domainApp "sanjaywa/domains/app"
-        domainChat "sanjaywa/domains/chat"
-        domainChatStorage "sanjaywa/domains/chatstorage"
-        domainDevice "sanjaywa/domains/device"
-        domainGroup "sanjaywa/domains/group"
-        domainMessage "sanjaywa/domains/message"
-        domainNewsletter "sanjaywa/domains/newsletter"
-        domainSend "sanjaywa/domains/send"
-        domainUser "sanjaywa/domains/user"
-        "sanjaywa/infrastructure/chatstorage"
-        "sanjaywa/infrastructure/whatsapp"
-        "sanjaywa/pkg/utils"
-        "sanjaywa/usecase"
+        "sanjaywa.com/wa/config"
+        domainAI "sanjaywa.com/wa/domains/ai"
+        domainApp "sanjaywa.com/wa/domains/app"
+        domainChat "sanjaywa.com/wa/domains/chat"
+        domainChatStorage "sanjaywa.com/wa/domains/chatstorage"
+        domainDevice "sanjaywa.com/wa/domains/device"
+        domainGroup "sanjaywa.com/wa/domains/group"
+        domainMessage "sanjaywa.com/wa/domains/message"
+        domainNewsletter "sanjaywa.com/wa/domains/newsletter"
+        domainSend "sanjaywa.com/wa/domains/send"
+        domainUser "sanjaywa.com/wa/domains/user"
+        "sanjaywa.com/wa/infrastructure/chatstorage"
+        "sanjaywa.com/wa/infrastructure/whatsapp"
+        "sanjaywa.com/wa/pkg/utils"
+        "sanjaywa.com/wa/usecase"
         _ "github.com/lib/pq"
         _ "github.com/mattn/go-sqlite3"
         "github.com/sirupsen/logrus"
@@ -60,7 +60,7 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
         Short: "Send free whatsapp API",
-        Long: `This application is from clone https://sanjaywa/src, 
+        Long: `This application is from clone https://sanjaywa.com/wa/src, 
 you can send whatsapp over http api but your whatsapp account have to be multi device version`,
 }
 

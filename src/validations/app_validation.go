@@ -3,7 +3,7 @@ package validations
 import (
 	"context"
 	"fmt"
-	pkgError "sanjaywa/pkg/error"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"regexp"
 )

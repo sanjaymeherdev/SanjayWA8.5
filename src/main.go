@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"sanjaywa/cmd"
+	"sanjaywa.com/wa/cmd"
 )
 
 //go:embed views/index.html

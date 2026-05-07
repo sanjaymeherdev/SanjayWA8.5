@@ -2,8 +2,8 @@ package validations
 
 import (
 	"context"
-	domainNewsletter "sanjaywa/domains/newsletter"
-	pkgError "sanjaywa/pkg/error"
+	domainNewsletter "sanjaywa.com/wa/domains/newsletter"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 

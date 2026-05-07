@@ -5,9 +5,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"sanjaywa/config"
-	"sanjaywa/ui/mcp"
-	"sanjaywa/ui/rest/helpers"
+	"sanjaywa.com/wa/config"
+	"sanjaywa.com/wa/ui/mcp"
+	"sanjaywa.com/wa/ui/rest/helpers"
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/spf13/cobra"
 )

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	domainChat "sanjaywa/domains/chat"
-	domainChatStorage "sanjaywa/domains/chatstorage"
-	"sanjaywa/infrastructure/whatsapp"
-	pkgError "sanjaywa/pkg/error"
-	"sanjaywa/pkg/utils"
-	"sanjaywa/validations"
+	domainChat "sanjaywa.com/wa/domains/chat"
+	domainChatStorage "sanjaywa.com/wa/domains/chatstorage"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	pkgError "sanjaywa.com/wa/pkg/error"
+	"sanjaywa.com/wa/pkg/utils"
+	"sanjaywa.com/wa/validations"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/appstate"
 )

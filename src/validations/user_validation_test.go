@@ -2,8 +2,8 @@ package validations
 
 import (
 	"context"
-	domainUser "sanjaywa/domains/user"
-	pkgError "sanjaywa/pkg/error"
+	domainUser "sanjaywa.com/wa/domains/user"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

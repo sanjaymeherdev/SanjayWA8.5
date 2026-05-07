@@ -3,8 +3,8 @@ package validations
 import (
 	"context"
 
-	domainGroup "sanjaywa/domains/group"
-	pkgError "sanjaywa/pkg/error"
+	domainGroup "sanjaywa.com/wa/domains/group"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.mau.fi/whatsmeow"
 )

@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	domainChatStorage "sanjaywa/domains/chatstorage"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	domainChatStorage "sanjaywa.com/wa/domains/chatstorage"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"

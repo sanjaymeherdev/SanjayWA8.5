@@ -1,8 +1,8 @@
 package rest
 
 import (
-	"sanjaywa/domains/device"
-	"sanjaywa/pkg/utils"
+	"sanjaywa.com/wa/domains/device"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

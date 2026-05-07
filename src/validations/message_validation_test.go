@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainMessage "sanjaywa/domains/message"
-	pkgError "sanjaywa/pkg/error"
+	domainMessage "sanjaywa.com/wa/domains/message"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

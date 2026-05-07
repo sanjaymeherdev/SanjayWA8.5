@@ -1,9 +1,9 @@
 package rest
 
 import (
-	domainUser "sanjaywa/domains/user"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/pkg/utils"
+	domainUser "sanjaywa.com/wa/domains/user"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

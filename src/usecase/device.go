@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	domainDevice "sanjaywa/domains/device"
-	"sanjaywa/infrastructure/whatsapp"
-	"sanjaywa/ui/websocket"
+	domainDevice "sanjaywa.com/wa/domains/device"
+	"sanjaywa.com/wa/infrastructure/whatsapp"
+	"sanjaywa.com/wa/ui/websocket"
 )
 
 type serviceDevice struct {

@@ -19,8 +19,8 @@ import (
 	"go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 
-	"sanjaywa/config"
-	pkgError "sanjaywa/pkg/error"
+	"sanjaywa.com/wa/config"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	"go.mau.fi/whatsmeow"
 )
 

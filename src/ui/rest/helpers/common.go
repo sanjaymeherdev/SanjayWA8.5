@@ -5,7 +5,7 @@ import (
 	"mime/multipart"
 	"time"
 
-	domainApp "sanjaywa/domains/app"
+	domainApp "sanjaywa.com/wa/domains/app"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow"
 )

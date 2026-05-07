@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainGroup "sanjaywa/domains/group"
-	pkgError "sanjaywa/pkg/error"
+	domainGroup "sanjaywa.com/wa/domains/group"
+	pkgError "sanjaywa.com/wa/pkg/error"
 	"github.com/stretchr/testify/assert"
 	"go.mau.fi/whatsmeow"
 )
