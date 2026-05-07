@@ -2,8 +2,8 @@ package validations
 
 import (
 	"context"
-	domainUser "whatsapp-bot/domains/user"
-	pkgError "whatsapp-bot/pkg/error"
+	domainUser "whatsappbot/domains/user"
+	pkgError "whatsappbot/pkg/error"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

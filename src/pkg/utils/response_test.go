@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"whatsapp-bot/pkg/utils"
+	"whatsappbot/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )

@@ -1,9 +1,9 @@
 package rest
 
 import (
-	domainNewsletter "whatsapp-bot/domains/newsletter"
-	"whatsapp-bot/infrastructure/whatsapp"
-	"whatsapp-bot/pkg/utils"
+	domainNewsletter "whatsappbot/domains/newsletter"
+	"whatsappbot/infrastructure/whatsapp"
+	"whatsappbot/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	domainChat "whatsapp-bot/domains/chat"
-	domainChatStorage "whatsapp-bot/domains/chatstorage"
-	"whatsapp-bot/infrastructure/whatsapp"
-	pkgError "whatsapp-bot/pkg/error"
-	"whatsapp-bot/pkg/utils"
-	"whatsapp-bot/validations"
+	domainChat "whatsappbot/domains/chat"
+	domainChatStorage "whatsappbot/domains/chatstorage"
+	"whatsappbot/infrastructure/whatsapp"
+	pkgError "whatsappbot/pkg/error"
+	"whatsappbot/pkg/utils"
+	"whatsappbot/validations"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/appstate"
 )

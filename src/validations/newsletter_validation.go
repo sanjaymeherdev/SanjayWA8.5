@@ -2,8 +2,8 @@ package validations
 
 import (
 	"context"
-	domainNewsletter "whatsapp-bot/domains/newsletter"
-	pkgError "whatsapp-bot/pkg/error"
+	domainNewsletter "whatsappbot/domains/newsletter"
+	pkgError "whatsappbot/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 

@@ -5,8 +5,8 @@ import (
 	"mime/multipart"
 	"testing"
 
-	domainSend "whatsapp-bot/domains/send"
-	pkgError "whatsapp-bot/pkg/error"
+	domainSend "whatsappbot/domains/send"
+	pkgError "whatsappbot/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

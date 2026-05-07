@@ -5,9 +5,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"whatsapp-bot/config"
-	"whatsapp-bot/ui/mcp"
-	"whatsapp-bot/ui/rest/helpers"
+	"whatsappbot/config"
+	"whatsappbot/ui/mcp"
+	"whatsappbot/ui/rest/helpers"
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/spf13/cobra"
 )

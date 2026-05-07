@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	pkgError "whatsapp-bot/pkg/error"
-	"whatsapp-bot/pkg/utils"
+	pkgError "whatsappbot/pkg/error"
+	"whatsappbot/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 )

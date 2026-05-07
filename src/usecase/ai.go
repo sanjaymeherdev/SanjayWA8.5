@@ -8,9 +8,9 @@ import (
         "io"
         "net/http"
 
-        "whatsapp-bot/config"
-        domainAI "whatsapp-bot/domains/ai"
-        pkgError "whatsapp-bot/pkg/error"
+        "whatsappbot/config"
+        domainAI "whatsappbot/domains/ai"
+        pkgError "whatsappbot/pkg/error"
 )
 
 type serviceAI struct{}

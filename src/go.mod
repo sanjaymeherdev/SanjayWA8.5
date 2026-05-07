@@ -1,4 +1,4 @@
-module whatsapp-bot
+module whatsappbot
 
 go 1.25.5
 

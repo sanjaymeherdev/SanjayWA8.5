@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	domainDevice "whatsapp-bot/domains/device"
-	"whatsapp-bot/infrastructure/whatsapp"
-	"whatsapp-bot/ui/websocket"
+	domainDevice "whatsappbot/domains/device"
+	"whatsappbot/infrastructure/whatsapp"
+	"whatsappbot/ui/websocket"
 )
 
 type serviceDevice struct {

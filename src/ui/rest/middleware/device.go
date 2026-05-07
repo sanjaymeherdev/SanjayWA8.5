@@ -4,9 +4,9 @@ import (
 	"net/url"
 	"strings"
 
-	"whatsapp-bot/config"
-	"whatsapp-bot/infrastructure/whatsapp"
-	"whatsapp-bot/pkg/utils"
+	"whatsappbot/config"
+	"whatsappbot/infrastructure/whatsapp"
+	"whatsappbot/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

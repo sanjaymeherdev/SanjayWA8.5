@@ -8,9 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	domainGroup "whatsapp-bot/domains/group"
-	"whatsapp-bot/infrastructure/whatsapp"
-	"whatsapp-bot/pkg/utils"
+	domainGroup "whatsappbot/domains/group"
+	"whatsappbot/infrastructure/whatsapp"
+	"whatsappbot/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.mau.fi/whatsmeow"
 )

@@ -3,7 +3,7 @@ package validations
 import (
 	"context"
 	"fmt"
-	pkgError "whatsapp-bot/pkg/error"
+	pkgError "whatsappbot/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"regexp"
 )

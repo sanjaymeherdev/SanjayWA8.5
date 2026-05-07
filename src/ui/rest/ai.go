@@ -1,8 +1,8 @@
 package rest
 
 import (
-	domainAI "whatsapp-bot/domains/ai"
-	"whatsapp-bot/pkg/utils"
+	domainAI "whatsappbot/domains/ai"
+	"whatsappbot/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

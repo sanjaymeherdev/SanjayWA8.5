@@ -3,8 +3,8 @@ package validations
 import (
 	"context"
 
-	domainGroup "whatsapp-bot/domains/group"
-	pkgError "whatsapp-bot/pkg/error"
+	domainGroup "whatsappbot/domains/group"
+	pkgError "whatsappbot/pkg/error"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.mau.fi/whatsmeow"
 )

@@ -3,10 +3,10 @@ package rest
 import (
 	"fmt"
 
-	"whatsapp-bot/config"
-	domainApp "whatsapp-bot/domains/app"
-	"whatsapp-bot/infrastructure/whatsapp"
-	"whatsapp-bot/pkg/utils"
+	"whatsappbot/config"
+	domainApp "whatsappbot/domains/app"
+	"whatsappbot/infrastructure/whatsapp"
+	"whatsappbot/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

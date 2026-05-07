@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"whatsapp-bot/config"
+	"whatsappbot/config"
 	"github.com/sirupsen/logrus"
 	_ "golang.org/x/image/webp" // Register WebP format
 )

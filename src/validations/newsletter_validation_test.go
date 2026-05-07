@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainNewsletter "whatsapp-bot/domains/newsletter"
-	pkgError "whatsapp-bot/pkg/error"
+	domainNewsletter "whatsappbot/domains/newsletter"
+	pkgError "whatsappbot/pkg/error"
 	"github.com/stretchr/testify/assert"
 )
 

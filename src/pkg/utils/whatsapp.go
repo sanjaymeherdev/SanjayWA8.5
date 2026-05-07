@@ -19,8 +19,8 @@ import (
 	"go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 
-	"whatsapp-bot/config"
-	pkgError "whatsapp-bot/pkg/error"
+	"whatsappbot/config"
+	pkgError "whatsappbot/pkg/error"
 	"go.mau.fi/whatsmeow"
 )
 

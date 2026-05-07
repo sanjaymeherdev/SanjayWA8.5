@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"whatsapp-bot/infrastructure/whatsapp"
+	"whatsappbot/infrastructure/whatsapp"
 )
 
 // ContextWithDefaultDevice resolves the default device from the global DeviceManager

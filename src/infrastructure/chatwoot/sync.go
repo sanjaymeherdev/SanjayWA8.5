@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	domainChatStorage "whatsapp-bot/domains/chatstorage"
-	"whatsapp-bot/pkg/utils"
+	domainChatStorage "whatsappbot/domains/chatstorage"
+	"whatsappbot/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/proto/waE2E"

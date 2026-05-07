@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	domainChat "whatsapp-bot/domains/chat"
-	domainMessage "whatsapp-bot/domains/message"
-	domainUser "whatsapp-bot/domains/user"
-	"whatsapp-bot/pkg/utils"
-	mcpHelpers "whatsapp-bot/ui/mcp/helpers"
+	domainChat "whatsappbot/domains/chat"
+	domainMessage "whatsappbot/domains/message"
+	domainUser "whatsappbot/domains/user"
+	"whatsappbot/pkg/utils"
+	mcpHelpers "whatsappbot/ui/mcp/helpers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

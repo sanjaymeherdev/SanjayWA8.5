@@ -15,8 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"whatsapp-bot/config"
-	"whatsapp-bot/pkg/utils"
+	"whatsappbot/config"
+	"whatsappbot/pkg/utils"
 	"github.com/sirupsen/logrus"
 )
 

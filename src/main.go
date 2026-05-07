@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"whatsapp-bot/cmd"
+	"whatsappbot/cmd"
 )
 
 //go:embed views/index.html

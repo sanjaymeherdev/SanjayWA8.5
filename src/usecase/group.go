@@ -8,12 +8,12 @@ import (
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/types"
 
-	"whatsapp-bot/config"
-	domainGroup "whatsapp-bot/domains/group"
-	"whatsapp-bot/infrastructure/whatsapp"
-	pkgError "whatsapp-bot/pkg/error"
-	"whatsapp-bot/pkg/utils"
-	"whatsapp-bot/validations"
+	"whatsappbot/config"
+	domainGroup "whatsappbot/domains/group"
+	"whatsappbot/infrastructure/whatsapp"
+	pkgError "whatsappbot/pkg/error"
+	"whatsappbot/pkg/utils"
+	"whatsappbot/validations"
 )
 
 type serviceGroup struct{}

@@ -5,12 +5,12 @@ import (
         "net/http"
         "strings"
 
-        "whatsapp-bot/config"
-        "whatsapp-bot/infrastructure/whatsapp"
-        "whatsapp-bot/ui/rest"
-        "whatsapp-bot/ui/rest/helpers"
-        "whatsapp-bot/ui/rest/middleware"
-        "whatsapp-bot/ui/websocket"
+        "whatsappbot/config"
+        "whatsappbot/infrastructure/whatsapp"
+        "whatsappbot/ui/rest"
+        "whatsappbot/ui/rest/helpers"
+        "whatsappbot/ui/rest/middleware"
+        "whatsappbot/ui/websocket"
         "github.com/dustin/go-humanize"
         "github.com/gofiber/fiber/v2"
         "github.com/gofiber/fiber/v2/middleware/basicauth"
@@ -26,7 +26,7 @@ import (
 var restCmd = &cobra.Command{
         Use:   "rest",
         Short: "Send whatsapp API over http",
-        Long:  `This application is from clone https://whatsapp-bot/src`,
+        Long:  `This application is from clone https://whatsappbot/src`,
         Run:   restServer,
 }
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"whatsapp-bot/pkg/utils"
+	"whatsappbot/pkg/utils"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

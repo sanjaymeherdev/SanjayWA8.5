@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	domainChatStorage "whatsapp-bot/domains/chatstorage"
-	"whatsapp-bot/infrastructure/whatsapp"
-	"whatsapp-bot/pkg/utils"
+	domainChatStorage "whatsappbot/domains/chatstorage"
+	"whatsappbot/infrastructure/whatsapp"
+	"whatsappbot/pkg/utils"
 	"github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"

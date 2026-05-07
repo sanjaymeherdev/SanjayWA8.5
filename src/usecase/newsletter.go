@@ -3,11 +3,11 @@ package usecase
 import (
 	"context"
 
-	domainNewsletter "whatsapp-bot/domains/newsletter"
-	"whatsapp-bot/infrastructure/whatsapp"
-	pkgError "whatsapp-bot/pkg/error"
-	"whatsapp-bot/pkg/utils"
-	"whatsapp-bot/validations"
+	domainNewsletter "whatsappbot/domains/newsletter"
+	"whatsappbot/infrastructure/whatsapp"
+	pkgError "whatsappbot/pkg/error"
+	"whatsappbot/pkg/utils"
+	"whatsappbot/validations"
 )
 
 type serviceNewsletter struct{}

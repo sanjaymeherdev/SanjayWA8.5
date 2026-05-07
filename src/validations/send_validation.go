@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"sort"
 
-	"whatsapp-bot/config"
-	domainSend "whatsapp-bot/domains/send"
-	pkgError "whatsapp-bot/pkg/error"
+	"whatsappbot/config"
+	domainSend "whatsappbot/domains/send"
+	pkgError "whatsappbot/pkg/error"
 	"github.com/dustin/go-humanize"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"

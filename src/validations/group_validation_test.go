@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	domainGroup "whatsapp-bot/domains/group"
-	pkgError "whatsapp-bot/pkg/error"
+	domainGroup "whatsappbot/domains/group"
+	pkgError "whatsappbot/pkg/error"
 	"github.com/stretchr/testify/assert"
 	"go.mau.fi/whatsmeow"
 )
