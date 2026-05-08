@@ -10,7 +10,7 @@ import (
         "time"
 
         "go.mau.fi/whatsmeow/store/sqlstore"
-
+"sanjaywa.com/wa/pkg/autopinger"
         "sanjaywa.com/wa/config"
         domainAI "sanjaywa.com/wa/domains/ai"
         domainApp "sanjaywa.com/wa/domains/app"
@@ -409,6 +409,7 @@ func initApp() {
         newsletterUsecase = usecase.NewNewsletterService()
         deviceUsecase = usecase.NewDeviceService(dm)
         aiUsecase = usecase.NewAIService()
+        autopinger.Start()
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -419,3 +420,4 @@ func Execute(embedIndex embed.FS, embedViews embed.FS) {
                 os.Exit(1)
         }
 }
+
